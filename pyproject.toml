@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calibraw-mcp"
+version = "1.0.0"
+description = "Model Context Protocol (MCP) server for professional RAW photo darkroom grading, non-destructive sidecars (.calibraw), Planckian white balance, and master rendering."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Saitej", email = "saitej160@gmail.com" },
+]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "raw",
+    "photography",
+    "calibraw",
+    "darktable",
+    "image-processing",
+    "photo-editing",
+    "llm",
+    "claude",
+    "cursor",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "rawpy>=0.20.0",
+    "Pillow>=10.0.0",
+    "numpy>=1.24.0",
+    "exifread>=3.0.0",
+    "scipy>=1.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/tej554/calibraw-mcp"
+Repository = "https://github.com/tej554/calibraw-mcp"
+Issues = "https://github.com/tej554/calibraw-mcp/issues"
+
+[project.scripts]
+calibraw-mcp = "calibraw_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+calibraw_mcp = ["wb_presets.json"]
