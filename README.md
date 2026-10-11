@@ -231,6 +231,63 @@ Every adjustment applied by CalibRaw MCP is written to a clean, structured `<ima
 }
 ```
 
+<p align="center">
+  <img src="docs/before_after.svg" alt="CalibRaw MCP Before & After Transformation" width="100%">
+</p>
+
+---
+
+## 📚 Photographic Recipe Book (Prompt Catalog)
+
+Here are ready-to-use natural language recipes you can paste directly into Claude Desktop or Cursor for instant creative grading:
+
+### 🎞️ 1. Analog 35mm Film (Kodak Portra 400)
+> *"Grade `portrait.cr3` with the character of Kodak Portra 400: lift the shadows slightly, soften high-frequency skin texture by -10, add a gentle warm peachy tone to midtones, apply a smooth Sigmoid shoulder roll-off, and inject subtle 35mm analog grain."*
+* **Tools invoked**: `apply_preset(..., "Kodak Portra 400")` or `update_image_edits(..., adjustments={"texture": -10, "grain_amount": 12, ...})`.
+
+### 🌅 2. Golden Hour Landscape & Dramatic Sky
+> *"Recover the clipped sky highlights in `coastal_sunset.arw` by -45, boost clarity in the foreground rocks by +18, set white balance to Planckian 5700K with +12 tint, and warm up the midtones with a golden tone curve."*
+* **Tools invoked**: `set_white_balance(..., kelvin=5700, tint=12)`, `update_image_edits(..., adjustments={"highlights": -45, "clarity": 18})`.
+
+### 🎬 3. Hollywood Teal & Orange
+> *"Apply a cinematic Teal & Orange look to `street_night.nef`. Push the shadow color wheel toward deep cyan/teal (#00b4d8), balance skin tones and street lamps toward warm amber in the midtones, and add subtle halation around bright light sources."*
+* **Tools invoked**: `apply_preset(..., "Moody Teal & Orange")`, `add_global_effect(..., effect_type="Halation", params={"intensity": 0.25})`.
+
+### 👗 4. High-Fashion Studio Portrait
+> *"Create an AI Subject mask for the model in `editorial_01.dng`. Raise subject exposure by +0.35 EV, slightly warm their skin, and soften texture. Then invert the mask to darken the studio backdrop by -0.5 EV."*
+* **Tools invoked**: `add_mask(..., mask_type="Subject")`, `add_mask(..., mask_type="Background", adjustments={"exposure": -0.5})`.
+
+### 🌌 5. Night Sky & Astrophotography
+> *"In `milky_way.dng`, neutralize sodium light pollution by shifting white balance to 3800K with -8 magenta tint. Stretch deep shadows by +35 without elevating black point, and apply edge-masked sharpening for pinpoint stars."*
+* **Tools invoked**: `set_white_balance(..., kelvin=3800, tint=-8)`, `update_image_edits(..., adjustments={"shadows": 35, "sharpen_amount": 40, "sharpen_masking": 60})`.
+
+### 🏛️ 6. Exhibition Fine-Art Monochrome
+> *"Convert `architecture.arw` to exhibition silver black & white. Crush the deep blacks by -15, punch micro-contrast with +25 clarity, apply an aggressive S-curve to midtones, and apply subtle vignette."*
+* **Tools invoked**: `apply_preset(..., "Monochrome Fine Art")`, `update_image_edits(..., adjustments={"clarity": 25, "vignette_amount": -20})`.
+
+---
+
+## 🔍 Interactive Web Inspector (Zero-Setup GUI)
+
+You can inspect, test, and interactively trigger all 18 CalibRaw MCP tools in a browser GUI using the official Model Context Protocol Inspector:
+
+```bash
+# Run with npx (no local installation required)
+npx @modelcontextprotocol/inspector uvx --from git+https://github.com/tej554/calibraw-mcp.git calibraw-mcp
+```
+
+Or test your local checkout:
+
+```bash
+npx @modelcontextprotocol/inspector python -m calibraw_mcp.server
+```
+
+This launches a local web interface (`http://localhost:5173`) where you can:
+* Test `read_image_edits` and view real-time JSON responses.
+* Move sliders and test `update_image_edits`.
+* Verify white balance math and McCamy CCT calculations.
+* Trigger test `export_image` rendering pipelines with one click.
+
 ---
 
 ## 🖥️ Client Compatibility & Demos
