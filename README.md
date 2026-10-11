@@ -9,6 +9,10 @@ A professional **Model Context Protocol (MCP)** server that connects Large Langu
 
 It enables AI assistants to inspect camera metadata, manipulate non-destructive **`.calibraw` JSON sidecars**, apply physical **Planckian white balance math**, create **local AI/geometric masks**, tune targeted **point colors**, and render **full-fidelity 4:4:4 master images** from camera RAW files (`.CR3`, `.NEF`, `.ARW`, `.DNG`, etc.).
 
+<p align="center">
+  <img src="docs/workflow.svg" alt="CalibRaw MCP Architecture & Workflow" width="100%">
+</p>
+
 ---
 
 ## 🌟 Key Capabilities
@@ -150,17 +154,95 @@ Add to your project's `.cursor/mcp.json` or `.mcp.json`:
 
 ## 💬 Conversational Prompt Examples
 
-Once registered with your AI assistant, you can grade photos in natural language:
+Once registered with your AI assistant, you can grade RAW photos conversationally using natural language across diverse photographic styles:
 
-> **"Inspect `IMG_4755.CR3`, read its metadata, and tell me the shot settings."**
+### 1. Optical Ingest & Shot Inspection
+> **User**: *"Inspect `golden_hour.arw`, read its sensor metadata, and summarize the shot configuration."*
+>
+> **Assistant**: Calls `get_image_info(image_path="golden_hour.arw")` and returns:
+> ```json
+> {
+>   "camera_make": "Sony",
+>   "camera_model": "ILCE-7M4",
+>   "lens": "FE 24-70mm F2.8 GM II",
+>   "iso": 100,
+>   "shutter_speed": "1/250s",
+>   "aperture": "f/2.8",
+>   "focal_length": "50.0 mm",
+>   "cfa_pattern": "RGGB",
+>   "sensor_dimensions": [7008, 4672]
+> }
+> ```
 
-> **"Warm up the white balance to 5800K, lift the shadows by +25, and apply a gentle S-curve to midtones."**
+### 2. Physical White Balance & Atmosphere
+> **User**: *"The lighting in `mountain_landscape.nef` feels too cool. Warm it up to 5800K, correct green tint to +8, and open the shadows by +20."*
+>
+> **Assistant**: Calls `set_white_balance(image_path="mountain_landscape.nef", kelvin=5800, tint=8)` to compute Planckian blackbody locus mired offsets, then calls `update_image_edits(image_path="mountain_landscape.nef", adjustments={"shadows": 20.0})`.
 
-> **"Add an AI subject mask to the model, bump exposure by +0.3 EV, and cool the background slightly."**
+### 3. AI Masking & Subject Isolation
+> **User**: *"Create an AI subject mask on `portrait.cr3`. Increase the subject's exposure by +0.35 EV, slightly soften skin tones, and cool the background."*
+>
+> **Assistant**: Calls `add_mask(image_path="portrait.cr3", mask_type="Subject", name="Model Pop", adjustments={"exposure": 0.35, "temperature": 30.0})`, followed by an inverted mask for background color balance.
 
-> **"Apply the Kodak Portra 400 preset, copy only the color grading to `IMG_4756.CR3` and `IMG_4757.CR3`, and export all three to JPEG."**
+### 4. Cinematic Emulation & Batch Sync
+> **User**: *"Apply the Kodak Portra 400 preset to `studio_session_01.dng`. Then copy only the color grading and tone curve to `studio_session_02.dng` and `studio_session_03.dng`, and render full-resolution JPEGs."*
+>
+> **Assistant**: 
+> 1. Calls `apply_preset(image_path="studio_session_01.dng", preset_name="Kodak Portra 400")`
+> 2. Calls `copy_settings(source_image="studio_session_01.dng", target_images=["studio_session_02.dng", "studio_session_03.dng"], categories=["Curves", "ColorGrading"], mode="merge")`
+> 3. Calls `export_image(...)` across the set for pristine 4:4:4 JPEGs.
 
 ---
+
+## 📄 Non-Destructive Sidecar Preview
+
+Every adjustment applied by CalibRaw MCP is written to a clean, structured `<image_name>.calibraw` JSON file. Your camera original RAW file is never altered:
+
+```json
+{
+  "format": "CalibRaw edit sidecar",
+  "schema_version": 1,
+  "basic": {
+    "exposure": 0.35,
+    "highlights": -30.0,
+    "shadows": 20.0,
+    "whites": 10.0,
+    "blacks": -5.0,
+    "temperature": 78,
+    "tint": 10,
+    "clarity": 15.0,
+    "vibrance": 18.0
+  },
+  "sigmoid": {
+    "slope": 1.45,
+    "shoulder_lift": 0.05
+  },
+  "masks": [
+    {
+      "id": "mask-subj-1",
+      "name": "Model Pop",
+      "mask_type": "Subject",
+      "adjustments": {
+        "exposure": 0.35,
+        "temperature": 30.0
+      }
+    }
+  ]
+}
+```
+
+---
+
+## 🖥️ Client Compatibility & Demos
+
+CalibRaw MCP is designed for seamless operation across major AI coding and conversational environments:
+
+| Environment | Mode | Workflow |
+| :--- | :--- | :--- |
+| **Claude Desktop** | Conversational UI | Chat with your photos in natural language, view tool execution traces, and inspect sidecars. |
+| **Cursor / Windsurf** | Agentic IDE | Ask agent to audit photos in workspace, run batch color grading, and generate master exports. |
+| **Antigravity** | Autonomous Darkroom | Full integration with dual-engine preview, before/after splits, and sidecar inspection. |
+| **CLI / Scripts** | Headless Automation | Script automated ingest pipelines, lens calibration, and mass preset applications. |
 
 ## 📂 Project Structure
 
