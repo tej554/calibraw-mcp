@@ -30,16 +30,16 @@ It enables AI assistants to inspect camera metadata, manipulate non-destructive 
 
 ### Installation
 
-Install via pip:
+Install directly from GitHub via pip:
 
 ```bash
-pip install calibraw-mcp
+pip install git+https://github.com/tej554/calibraw-mcp.git
 ```
 
 Or run directly without installation using `uvx`:
 
 ```bash
-uvx calibraw-mcp
+uvx --from git+https://github.com/tej554/calibraw-mcp.git calibraw-mcp
 ```
 
 Or install from source:
@@ -63,7 +63,7 @@ Add `calibraw-mcp` to your `claude_desktop_config.json` (`%APPDATA%\Claude\claud
   "mcpServers": {
     "calibraw": {
       "command": "uvx",
-      "args": ["calibraw-mcp"]
+      "args": ["--from", "git+https://github.com/tej554/calibraw-mcp.git", "calibraw-mcp"]
     }
   }
 }
